@@ -21,7 +21,10 @@ services:
       - ollama
     entrypoint: ["/bin/sh", "-lc"]
     command: >
-      sleep 2 &&
+      for i in $(seq 1 30); do
+        wget -qO- http://ollama:11434/api/version >/dev/null 2>&1 && break;
+        sleep 2;
+      done;
       OLLAMA_HOST=http://ollama:11434 ollama pull ${OLLAMA_MODEL:-llama3.1:8b} &&
       OLLAMA_HOST=http://ollama:11434 ollama pull ${OLLAMA_EMBED_MODEL:-nomic-embed-text}
     restart: "no"
